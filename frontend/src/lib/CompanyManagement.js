@@ -1,10 +1,10 @@
 // lib/api.js - Complete API functions for Companies
-const AWS_LAMBDA_API_URL = process.env.AWS_LAMBDA_API_URL;
-const AWS_LAMBDA_API_KEY = process.env.AWS_LAMBDA_API_KEY;
+const U2V1_API_URL = process.env.U2V1_API_URL;
+const U2V1_API_KEY = process.env.U2V1_API_KEY;
 
 const headers = {
   "Content-Type": "application/json",
-  "x-api-key": AWS_LAMBDA_API_KEY,
+  "x-api-key": U2V1_API_KEY,
 };
 
 // Helper function to handle API responses
@@ -56,7 +56,7 @@ async function handleResponse(response) {
 // Get all companies
 export async function getAllCompanies() {
   try {
-    const response = await fetch(`${AWS_LAMBDA_API_URL}/companies`, {
+    const response = await fetch(`${U2V1_API_URL}/companies`, {
       method: "GET",
       headers,
       mode: "cors",
@@ -74,7 +74,7 @@ export async function getAllCompanies() {
 // Get a single company by ID
 export async function getCompany(id) {
   try {
-    const response = await fetch(`${AWS_LAMBDA_API_URL}/companies/${id}`, {
+    const response = await fetch(`${U2V1_API_URL}/companies/${id}`, {
       method: "GET",
       headers,
       mode: "cors",
@@ -91,7 +91,7 @@ export async function getCompany(id) {
 // Create a new company
 export async function createCompany(companyData) {
   try {
-    const response = await fetch(`${AWS_LAMBDA_API_URL}/companies`, {
+    const response = await fetch(`${U2V1_API_URL}/companies`, {
       method: "POST",
       headers,
       mode: "cors",
@@ -108,7 +108,7 @@ export async function createCompany(companyData) {
 // Update an existing company
 export async function updateCompany(id, companyData) {
   try {
-    const response = await fetch(`${AWS_LAMBDA_API_URL}/companies/${id}`, {
+    const response = await fetch(`${U2V1_API_URL}/companies/${id}`, {
       method: "PUT",
       headers,
       mode: "cors",
@@ -125,7 +125,7 @@ export async function updateCompany(id, companyData) {
 // Delete a company
 export async function deleteCompany(id) {
   try {
-    const response = await fetch(`${AWS_LAMBDA_API_URL}/companies/${id}`, {
+    const response = await fetch(`${U2V1_API_URL}/companies/${id}`, {
       method: "DELETE",
       headers,
       mode: "cors",
