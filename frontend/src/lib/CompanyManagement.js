@@ -1,6 +1,8 @@
-// lib/api.js - Complete API functions for Companies
-const U2V1_API_URL = process.env.U2V1_API_URL;
-const U2V1_API_KEY = process.env.U2V1_API_KEY;
+// lib/CompanyManagement.js - API functions for Companies
+const U2V1_API_URL =
+  process.env.NEXT_PUBLIC_U2V1_API_URL || process.env.U2V1_API_URL;
+const U2V1_API_KEY =
+  process.env.NEXT_PUBLIC_U2V1_API_KEY || process.env.U2V1_API_KEY;
 
 const headers = {
   "Content-Type": "application/json",

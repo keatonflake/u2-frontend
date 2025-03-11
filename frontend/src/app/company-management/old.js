@@ -1,5 +1,6 @@
-import { getAllCompanies } from "@/lib/CompanyManagement";
-import CompaniesTableClient from "@/components/company/CompaniesTableClient";
+// app/companies/page.jsx (or wherever your page is located)
+import { getAllCompanies } from "@/lib/CompanyManagement"; // Updated import path
+import CompaniesTable from "@/components/CompaniesTableClient"; // Updated component name
 
 export default async function CompaniesPage() {
   // Fetch companies data on the server
@@ -12,7 +13,8 @@ export default async function CompaniesPage() {
       </div>
 
       {/* Pass server data to client component */}
-      <CompaniesTableClient initialCompanies={companies.data || []} />
+      <CompaniesTable initialCompanies={companies.data || []} />
+      {/* Note: we're extracting companies.data since your API returns { success, message, data } */}
     </div>
   );
 }

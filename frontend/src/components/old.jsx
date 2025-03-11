@@ -46,17 +46,24 @@ export default function CompaniesTable({ initialCompanies = [] }) {
 
   // Handler for row selection
   const toggleSelectAll = () => {
-    if (selectedRows.length === companies.length) {
+    if (selectedRows.length === filteredCompanies.length) {
+      // If all are selected, deselect all
       setSelectedRows([]);
     } else {
-      setSelectedRows(companies.map((company) => company.company_code));
+      // Otherwise, select all filtered companies
+      setSelectedRows(filteredCompanies.map((company) => company.company_code));
     }
   };
 
-  const toggleSelectRow = (id) => {
+  const toggleSelectRow = (id, e) => {
+    // Stop propagation to prevent row click from triggering
+    e.stopPropagation();
+
     if (selectedRows.includes(id)) {
+      // If already selected, remove from selection
       setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
     } else {
+      // Otherwise, add to selection
       setSelectedRows([...selectedRows, id]);
     }
   };
@@ -153,7 +160,7 @@ export default function CompaniesTable({ initialCompanies = [] }) {
   }
 
   return (
-    <div className="flex flex-col h-full border shadow-sm">
+    <div className="flex flex-col h-full border shadow-sm m-10">
       {/* Toolbar */}
       <div className="bg-white border-b p-2 flex items-center space-x-2">
         <button
@@ -238,146 +245,146 @@ export default function CompaniesTable({ initialCompanies = [] }) {
           </div>
         ) : (
           <table className="min-w-full bg-white">
-            <thead className="bg-gray-50 text-gray-700 text-sm">
+            <thead className="bg-gray-300 text-black text-sm">
               <tr>
-                <th className="w-10 p-2 sticky top-0 bg-gray-50">
+                <th className="w-10 p-2 sticky top-0 bg-gray-300">
                   <input
                     type="checkbox"
                     className="h-4 w-4"
                     checked={
-                      selectedRows.length === companies.length &&
-                      companies.length > 0
+                      selectedRows.length === filteredCompanies.length &&
+                      filteredCompanies.length > 0
                     }
                     onChange={toggleSelectAll}
                   />
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Co Code
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Company Name
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Type
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Curr Mode
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Curr Time
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Country Type
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Country Code
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Cat Code 1
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Cat Code 2
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Fiscal Year
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Current Period
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Fiscal Start
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Fiscal End
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   No Printing
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Special Handling
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   No 52 Period
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Capital Reports
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Maturity Calc
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Detail Level
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Unit Number
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Year Code
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Fiscal Setting
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Currency Code
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Date Format
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Country
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Fiscal Period Pattern
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Calendar Type
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Company Prefix
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Created By
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Created Program
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Created Date
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Updated By
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Updated Program
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Updated Date
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Updated Time
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Job Name
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Sys Created By
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Sys Creation Date
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Sys Updated By
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Sys Update Date
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Is Deleted
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Deleted Date
                 </th>
-                <th className="p-2 text-left font-medium sticky top-0 bg-gray-50">
+                <th className="p-2 text-left font-medium sticky top-0 bg-gray-300">
                   Deleted By
                 </th>
               </tr>
@@ -1108,7 +1115,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="created_by"
                   value={formData.created_by}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.created_by}
                 />
               </div>
@@ -1122,7 +1129,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="created_program"
                   value={formData.created_program}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.created_program}
                 />
               </div>
@@ -1139,7 +1146,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                       ? new Date(company.created_date).toLocaleDateString()
                       : ""
                   }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly
                 />
               </div>
@@ -1153,7 +1160,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="updated_by"
                   value={formData.updated_by}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.updated_by}
                 />
               </div>
@@ -1167,7 +1174,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="updated_program"
                   value={formData.updated_program}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.updated_program}
                 />
               </div>
@@ -1184,7 +1191,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                       ? new Date(company.updated_date).toLocaleDateString()
                       : ""
                   }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly
                 />
               </div>
@@ -1198,7 +1205,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="system_created_by"
                   value={formData.system_created_by}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.system_created_by}
                 />
               </div>
@@ -1217,7 +1224,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                         ).toLocaleDateString()
                       : ""
                   }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly
                 />
               </div>
@@ -1231,7 +1238,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="updated_time"
                   value={formData.updated_time}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.updated_time}
                 />
               </div>
@@ -1245,7 +1252,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="job_name"
                   value={formData.job_name}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.job_name}
                 />
               </div>
@@ -1259,7 +1266,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                   name="deleted_by"
                   value={formData.deleted_by}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly={!!company.deleted_by}
                 />
               </div>
@@ -1276,7 +1283,7 @@ function CompanyModal({ title, onClose, onSubmit, isLoading, company }) {
                       ? new Date(company.deleted_date).toLocaleDateString()
                       : ""
                   }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-50"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-300"
                   readOnly
                 />
               </div>
