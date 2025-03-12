@@ -14,6 +14,7 @@ import {
   createCompany,
   updateCompany,
   deleteCompany,
+  deleteCompanies,
 } from "@/lib/CompanyManagement";
 
 export default function CompaniesTable({ initialCompanies = [] }) {
@@ -23,6 +24,8 @@ export default function CompaniesTable({ initialCompanies = [] }) {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [currentCompany, setCurrentCompany] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // API handlers
   const handleAddCompany = async (companyData) => {
@@ -51,19 +54,37 @@ export default function CompaniesTable({ initialCompanies = [] }) {
     }
   };
 
+  // Updated to use the batch delete API when available
   const handleDeleteCompanies = async (ids) => {
+    if (!ids || ids.length === 0) {
+      return { success: false, message: "No companies selected for deletion" };
+    }
+
+    setIsLoading(true);
+    setErrorMessage(null);
+
     try {
-      // Delete companies one by one
-      for (const id of ids) {
-        const result = await deleteCompany(id);
-        if (!result.success) {
-          throw new Error(result.message || `Failed to delete company ${id}`);
-        }
+      let result;
+
+      if (ids.length === 1) {
+        // For a single company, use the single-item endpoint
+        result = await deleteCompany(ids[0]);
+      } else {
+        // For multiple companies, use the batch endpoint
+        result = await deleteCompanies(ids);
       }
-      return true;
+
+      if (!result.success) {
+        throw new Error(result.message || "Failed to delete companies");
+      }
+
+      return result;
     } catch (error) {
       console.error("Failed to delete companies:", error);
+      setErrorMessage(error.message);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,39 +102,56 @@ export default function CompaniesTable({ initialCompanies = [] }) {
   };
 
   const openDeleteConfirm = (ids) => {
-    setSelectedRows(ids);
-    setIsDeleteConfirmOpen(true);
+    // Ensure we have valid company_code values for deletion
+    if (Array.isArray(ids) && ids.length > 0) {
+      console.log("Opening delete confirmation for:", ids);
+      setSelectedRows(ids);
+      setIsDeleteConfirmOpen(true);
+    } else {
+      console.warn("No valid company codes provided for deletion");
+    }
   };
 
   const handleAddSubmit = async (data) => {
     try {
+      setIsLoading(true);
       await handleAddCompany(data);
       setIsAddModalOpen(false);
       // Refresh data would happen via the DataTableContext in a real app
     } catch (error) {
       console.error("Error adding company:", error);
+      setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleEditSubmit = async (data) => {
     try {
+      setIsLoading(true);
       await handleEditCompany(data);
       setIsEditModalOpen(false);
       setCurrentCompany(null);
       // Refresh data would happen via the DataTableContext in a real app
     } catch (error) {
       console.error("Error updating company:", error);
+      setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleDeleteConfirm = async () => {
     try {
+      console.log("Deleting companies with IDs:", selectedRows);
       await handleDeleteCompanies(selectedRows);
       setIsDeleteConfirmOpen(false);
       setSelectedRows([]);
       // Refresh data would happen via the DataTableContext in a real app
     } catch (error) {
       console.error("Error deleting companies:", error);
+      // Keep the dialog open to show the error
+      setErrorMessage(error.message);
     }
   };
 
@@ -319,6 +357,19 @@ export default function CompaniesTable({ initialCompanies = [] }) {
 
   return (
     <div className="flex flex-col h-full border shadow-sm m-1">
+      {errorMessage && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{errorMessage}</span>
+          <button
+            onClick={() => setErrorMessage(null)}
+            className="float-right text-red-700 hover:text-red-900"
+          >
+            &times;
+          </button>
+        </div>
+      )}
+
       <DataTableProvider
         initialData={initialCompanies}
         onAdd={handleAddCompany}
@@ -366,37 +417,12 @@ export default function CompaniesTable({ initialCompanies = [] }) {
         <CompanyForm
           onSubmit={handleAddSubmit}
           onCancel={() => setIsAddModalOpen(false)}
+          isLoading={isLoading}
           company={{
             subscriber_id: "",
             company_code: "",
             company_name: "",
-            company_type: "",
-            currency_mode: "",
-            currency_time: "",
-            country_type: "",
-            country_code: "",
-            category_code1: "",
-            category_code2: "",
-            current_fiscal_year: "",
-            current_period: "",
-            fiscal_start_period: "",
-            fiscal_end_period: "",
-            no_printing: "",
-            special_handling: "",
-            no_52_period: "",
-            capital_reports: "",
-            maturity_calc_type: "",
-            detail_level: "",
-            unit_number: "",
-            year_code: "",
-            fiscal_setting: "",
-            currency_code: "",
-            date_format: "",
-            company_country: "",
-            fiscal_period_pattern: "",
-            calendar_type: "",
-            company_prefix: "",
-            // System fields would typically be automatically set
+            // ... other default fields
           }}
         />
       </Modal>
@@ -419,6 +445,7 @@ export default function CompaniesTable({ initialCompanies = [] }) {
               setIsEditModalOpen(false);
               setCurrentCompany(null);
             }}
+            isLoading={isLoading}
           />
         )}
       </Modal>
@@ -432,8 +459,10 @@ export default function CompaniesTable({ initialCompanies = [] }) {
         message={`Are you sure you want to delete ${
           selectedRows.length
         } selected ${selectedRows.length === 1 ? "company" : "companies"}?`}
-        confirmLabel="Delete"
+        confirmLabel={isLoading ? "Deleting..." : "Delete"}
         variant="danger"
+        disabled={isLoading}
+        error={errorMessage}
       />
     </div>
   );

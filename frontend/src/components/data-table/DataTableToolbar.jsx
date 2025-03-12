@@ -135,7 +135,7 @@ export default function DataTableToolbar({
         <input
           type="text"
           placeholder={searchPlaceholder}
-          className="border rounded-lg px-3 py-1 pl-8"
+          className="border rounded-lg px-3 py-1 pl-8 w-xl"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
